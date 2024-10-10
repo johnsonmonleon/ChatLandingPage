@@ -15,7 +15,7 @@ export class TemplateOneComponent implements OnInit, AfterViewInit {
   el = inject(ElementRef);
   titleService = inject(Title);
 
-  chatBoxPosition: string = 'Center'; //  Default | Center  
+  chatBoxPosition: string = 'Default'; //  Default | Center  
   ngOnInit() {
     this.changeFavicon('../assets/template-one/favicon.ico');
     this.titleService.setTitle('Chat Landing Page - Template 1'); 
