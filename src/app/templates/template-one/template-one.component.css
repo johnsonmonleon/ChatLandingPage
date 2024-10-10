@@ -45,27 +45,20 @@
 
 .carousel-caption {
     position: absolute;
-    /* Ensure it overlaps the image */
     bottom: 20px;
-    /* Add space from the bottom if needed */
     left: 0;
     right: 0;
-    top: 50%;
-    /* Center vertically */
+    top: 30%;
     transform: translateY(-50%);
-    /* Adjust for vertical centering */
     text-align: center;
-    /* Center text */
 }
 
 /* Declare heights because of positioning of img element */
 .carousel-item {
-    height: 30rem;
+    height: 15rem;
     background-size: cover;
-    /* Cover the entire item */
     background-position: center;
-    /* Center the image */
-    /* top: 4.9rem; */
+    top: 4.8rem;
 }
 
 .carousel-item>img {
@@ -84,12 +77,9 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    /* Optional: adds a dark overlay */
     display: flex;
     align-items: center;
-    /* Center the content vertically */
     justify-content: center;
-    /* Center the content horizontally */
 }
 
 

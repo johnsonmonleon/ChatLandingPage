@@ -15,7 +15,7 @@ export class TemplateOneComponent implements OnInit {
   el = inject(ElementRef);
   titleService = inject(Title);
 
-  chatBoxPosition: string = 'Default'; //  Default | Center  
+  chatBoxPosition: string = 'Center'; //  Default | Center  
   ngOnInit() {
     this.changeFavicon('../assets/template-one/favicon.ico');
     this.titleService.setTitle('Chat Landing Page - Template 1'); 
@@ -39,18 +39,13 @@ export class TemplateOneComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    if (this.chatBoxPosition === 'Center') {
-      // Delay the initial class update
-      setTimeout(() => {
-        this.updateIframeClasses(); // Initial class update
-      }, 100); // Adjust timeout as necessary
-  
+
+    if(this.chatBoxPosition == 'Center') {
+      this.updateIframeClasses(); // Initial class update
+
       // SetInterval as a fallback
       const intervalId: ReturnType<typeof setInterval> = setInterval(() => {
-        const found = this.updateIframeClasses();
-        if (found) {
-          clearInterval(intervalId); // Stop the loop if the iframe is found and chat opened
-        }
+        this.updateIframeClasses();
       }, 500); // Check every 500 milliseconds
     }
   }
@@ -62,31 +57,30 @@ export class TemplateOneComponent implements OnInit {
     }
   }
 
-  private updateIframeClasses(): boolean {
+  private updateIframeClasses(): void {
+    // Querying the document directly
     const iframes: NodeListOf<HTMLElement> = document.querySelectorAll('.genesys-mxg-container-frame');
-    console.log(`Found ${iframes.length} iframes`);
-  
+
     if (iframes.length) {
-      const iframeArray = Array.from(iframes); // Convert NodeList to an Array
-      for (const iframe of iframeArray) {
+      iframes.forEach((iframe: HTMLElement) => {
         const screenWidth = window.innerWidth;
-        console.log(`Detected screen width: ${screenWidth}`);
-  
-        if (screenWidth >= 992 || screenWidth >= 600) {
+
+        // Add classes for large screens
+        if (screenWidth >= 992) { // Large screens (≥ 992px)
           this.addClasses(iframe);
           this.openChat(iframe); // Open chat if on large screen
-          return true; // Indicate that the chat was opened
+        } else if(screenWidth >= 600) {
+          this.addClasses(iframe);
+          this.openChat(iframe); // Open chat if on large screen
         } else {
+          // Remove classes on medium and small screens
           this.removeClasses(iframe);
         }
-      }
+      });
     } else {
-      console.log('Iframe not found, checking again...');
+      console.log('Iframe not found, checking again...'); // Log when not found
     }
-  
-    return false; // Indicate that no chat was opened
   }
-  
 
   private addClasses(iframe: HTMLElement): void {
     this.renderer.addClass(iframe, 'position-fixed');
@@ -105,8 +99,7 @@ export class TemplateOneComponent implements OnInit {
   private openChat(iframe: HTMLElement): void {
     const chatWindow = iframe as HTMLIFrameElement; // Cast to HTMLIFrameElement
     if (chatWindow.contentWindow) {
-      // Send a message to open the chat
-      chatWindow.contentWindow.postMessage('open', '*');
+      chatWindow.contentWindow.postMessage('open', '*'); // Send a message to open the chat
       console.log('Opening chat box...');
     } else {
       console.error('Chat window not available');
