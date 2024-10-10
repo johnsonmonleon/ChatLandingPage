@@ -9,13 +9,13 @@ import { GenesysService } from '../../services/genesys.service';
   templateUrl: './template-one.component.html',
   styleUrl: './template-one.component.css'
 })
-export class TemplateOneComponent implements OnInit {
+export class TemplateOneComponent implements OnInit, AfterViewInit {
   genesysService = inject(GenesysService);
   renderer = inject(Renderer2);
   el = inject(ElementRef);
   titleService = inject(Title);
 
-  chatBoxPosition: string = 'Default'; //  Default | Center  
+  chatBoxPosition: string = 'Center'; //  Default | Center  
   ngOnInit() {
     this.changeFavicon('../assets/template-one/favicon.ico');
     this.titleService.setTitle('Chat Landing Page - Template 1'); 
@@ -40,18 +40,20 @@ export class TemplateOneComponent implements OnInit {
 
   ngAfterViewInit(): void {
     if (this.chatBoxPosition === 'Center') {
-      // Delay the initial class update
       setTimeout(() => {
-        this.updateIframeClasses(); // Initial class update
-      }, 100); // Adjust timeout as necessary
+        const found = this.updateIframeClasses(); // Initial class update
+        if (!found) {
+          const intervalId = setInterval(() => {
+            const foundAgain = this.updateIframeClasses();
+            if (foundAgain) {
+              clearInterval(intervalId); // Stop the loop if the iframe is found and chat opened
+            }
+          }, 500); // Check every 500 milliseconds
   
-      // SetInterval as a fallback
-      const intervalId: ReturnType<typeof setInterval> = setInterval(() => {
-        const found = this.updateIframeClasses();
-        if (found) {
-          clearInterval(intervalId); // Stop the loop if the iframe is found and chat opened
+          // Optional: Clear the interval after a certain timeout (e.g., 10 seconds)
+          setTimeout(() => clearInterval(intervalId), 10000);
         }
-      }, 500); // Check every 500 milliseconds
+      }, 100); // Adjust timeout as necessary
     }
   }
 
@@ -67,7 +69,7 @@ export class TemplateOneComponent implements OnInit {
     console.log(`Found ${iframes.length} iframes`);
   
     if (iframes.length) {
-      const iframeArray = Array.from(iframes); // Convert NodeList to an Array
+      const iframeArray = Array.from(iframes);
       for (const iframe of iframeArray) {
         const screenWidth = window.innerWidth;
         console.log(`Detected screen width: ${screenWidth}`);
