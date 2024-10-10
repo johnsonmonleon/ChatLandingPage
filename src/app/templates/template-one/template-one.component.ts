@@ -87,6 +87,16 @@ export class TemplateOneComponent implements OnInit {
     return false; // Indicate that no chat was opened
   }
   
+  private openChat(iframe: HTMLElement): void {
+    const chatWindow = iframe as HTMLIFrameElement; // Cast to HTMLIFrameElement
+    if (chatWindow.contentWindow) {
+      // Send a message to open the chat
+      chatWindow.contentWindow.postMessage('open', '*');
+      console.log('Opening chat box...');
+    } else {
+      console.error('Chat window not available');
+    }
+  }
 
   private addClasses(iframe: HTMLElement): void {
     this.renderer.addClass(iframe, 'position-fixed');
@@ -100,16 +110,5 @@ export class TemplateOneComponent implements OnInit {
     this.renderer.removeClass(iframe, 'top-50');
     this.renderer.removeClass(iframe, 'start-50');
     this.renderer.removeClass(iframe, 'translate-middle');
-  }
-
-  private openChat(iframe: HTMLElement): void {
-    const chatWindow = iframe as HTMLIFrameElement; // Cast to HTMLIFrameElement
-    if (chatWindow.contentWindow) {
-      // Send a message to open the chat
-      chatWindow.contentWindow.postMessage('open', '*');
-      console.log('Opening chat box...');
-    } else {
-      console.error('Chat window not available');
-    }
   }
 }
